@@ -1,11 +1,3 @@
-GIT
-  remote: git://github.com/45Robots/shipwire.git
-  revision: 1f2a5b80280868e2caac0b51dc91c80b716b43e8
-  specs:
-    shipwire (1.0.0)
-      faraday
-      nokogiri
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -352,6 +344,7 @@ DEPENDENCIES
   devise_invitable
   factory_girl_rails
   faker
+  faraday
   figaro
   guard-bundler
   guard-rails
@@ -376,7 +369,6 @@ DEPENDENCIES
   rspec-rails
   sass-rails (~> 5.0)
   selenium-webdriver
-  shipwire!
   shopify_api
   simple_form
   spring

@@ -23,7 +23,7 @@ gem 'pg'
 gem 'pundit'
 gem 'simple_form'
 gem 'shopify_api'
-gem 'shipwire', github: '45Robots/shipwire'
+gem 'faraday'
 
 group :development do
   gem 'better_errors'
