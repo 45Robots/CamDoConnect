@@ -14,7 +14,6 @@ module ShipwireAPI
                   end
     end
 
-
     protected
 
     def resource_name
@@ -24,7 +23,15 @@ module ShipwireAPI
 
   class Order
     def initialize(params)
-      @params = params
+      @params = params['resource']
+    end
+
+    def id
+      params['id']
+    end
+
+    def to_json
+      params.to_json
     end
 
     private

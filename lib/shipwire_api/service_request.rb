@@ -2,18 +2,21 @@ require 'faraday'
 
 module ShipwireAPI
   class ServiceRequest
-    attr_reader :response, :errors, :next_url
+    attr_reader :response, :errors, :next_url, :since, :limit
 
-    def initialize
+    def initialize(since: nil, limit: 100)
+      @since = since
+      @limit = limit
       @errors = []
     end
 
-    def get(url: ShipwireAPI.endpoint + resource_name, since: nil, limit: 100)
+    def get(url: ShipwireAPI.endpoint + resource_name)
       begin
         connection = Faraday.new(url: url) do |faraday|
           faraday.request :url_encoded
-          faraday.params['limit'] = limit
-          faraday.params['updatedAfter'] = since.utc.iso8601 if since.present?
+          faraday.params[:limit] = limit
+          faraday.params[:expand] = 'all'
+          faraday.params[:updatedAfter] = since if since.present?
           faraday.authorization "Basic", ShipwireAPI.authorization
           faraday.adapter Faraday.default_adapter
         end

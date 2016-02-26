@@ -1,6 +1,6 @@
 FactoryGirl.define do
-  factory :shopify_order, class: 'Shopify::Order' do
-    order_id 1
-    json_payload ""
+  factory :shopify_order do
+    order_is 1
+    payload ""
   end
 end

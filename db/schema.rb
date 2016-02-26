@@ -11,16 +11,54 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160210031336) do
+ActiveRecord::Schema.define(version: 20160223164754) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "active_admin_comments", force: :cascade do |t|
+    t.string   "namespace"
+    t.text     "body"
+    t.string   "resource_id",   null: false
+    t.string   "resource_type", null: false
+    t.integer  "author_id"
+    t.string   "author_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "active_admin_comments", ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id", using: :btree
+  add_index "active_admin_comments", ["namespace"], name: "index_active_admin_comments_on_namespace", using: :btree
+  add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id", using: :btree
+
+  create_table "shipwire_orders", force: :cascade do |t|
+    t.integer  "order_id",           limit: 8
+    t.jsonb    "payload"
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.datetime "order_updated_at"
+    t.integer  "common_id",          limit: 8
+    t.string   "shopify_id"
+    t.string   "fulfillment_status"
+    t.float    "subtotal"
+    t.float    "shipping_amount"
+    t.integer  "units"
+    t.float    "total_shipping"
+  end
+
   create_table "shopify_orders", force: :cascade do |t|
-    t.integer  "order_id",     limit: 8
-    t.jsonb    "json_payload"
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.integer  "order_id",           limit: 8
+    t.jsonb    "payload"
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.datetime "order_updated_at"
+    t.integer  "common_id",          limit: 8
+    t.string   "shopify_id"
+    t.string   "fulfillment_status"
+    t.float    "subtotal"
+    t.float    "shipping_amount"
+    t.integer  "units"
+    t.float    "total_shipping"
   end
 
   create_table "users", force: :cascade do |t|
@@ -57,5 +95,22 @@ ActiveRecord::Schema.define(version: 20160210031336) do
   add_index "users", ["invitations_count"], name: "index_users_on_invitations_count", using: :btree
   add_index "users", ["invited_by_id"], name: "index_users_on_invited_by_id", using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+
+
+  create_view :combined_orders,  sql_definition: <<-SQL
+      SELECT shipwire_orders.id,
+      shopify_orders.shopify_id AS shopify_identifier,
+      shipwire_orders.shopify_id AS shipwire_identifier,
+      shopify_orders.id AS shopify_order_id,
+      shipwire_orders.id AS shipwire_order_id,
+      shopify_orders.fulfillment_status AS shopify_status,
+      shipwire_orders.fulfillment_status AS shipwire_status,
+      shopify_orders.order_updated_at AS shopify_updated_at,
+      shipwire_orders.order_updated_at AS shipwire_updated_at,
+      shopify_orders.total_shipping AS shopify_total_shipping,
+      shipwire_orders.total_shipping AS shipwire_total_shipping
+     FROM (shipwire_orders
+       LEFT JOIN shopify_orders ON (((shipwire_orders.shopify_id)::text ~~* ((shopify_orders.shopify_id)::text || '%'::text))));
+  SQL
 
 end
