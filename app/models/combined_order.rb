@@ -3,6 +3,7 @@ class CombinedOrder < ActiveRecord::Base
 
   belongs_to :shopify_order
   belongs_to :shipwire_order
+  belongs_to :xero_invoice
 
   delegate :payload, to: :shopify_order, prefix: :shopify_order, allow_nil: true
   delegate :payload, :total_shipping, to: :shipwire_order, prefix: :shipwire_order, allow_nil: true

@@ -5,17 +5,22 @@ ActiveAdmin.register CombinedOrder do
   actions :index, :show
 
   preserve_default_filters!
-  remove_filter :id, :shopify_order, :shipwire_order
+  remove_filter :id, :shopify_order, :shipwire_order, :xero_invoice, :shopify_identifier, :xero_identifier
 
   index do
     column :shopify_identifier
     column :shipwire_identifier
+    column :xero_identifier
     column :shopify_status
     column :shipwire_status
+    column :xero_status
     column :shopify_total_shipping
     column :shipwire_total_shipping
-    column :shopify_updated_at
-    column :shipwire_updated_at
+    column :shopify_sub_total
+    column :xero_sub_total
+    column :shopify_total
+    column :xero_total
+    column :shipwire_updated_at, label: "Updated At"
     actions
   end
 

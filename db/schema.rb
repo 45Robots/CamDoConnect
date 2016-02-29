@@ -59,6 +59,8 @@ ActiveRecord::Schema.define(version: 20160229175604) do
     t.float    "shipping_amount"
     t.integer  "units"
     t.float    "total_shipping"
+    t.float    "sub_total"
+    t.float    "total"
   end
 
   create_table "users", force: :cascade do |t|
@@ -107,6 +109,8 @@ ActiveRecord::Schema.define(version: 20160229175604) do
     t.datetime "updated_at",       null: false
     t.string   "invoice_id"
     t.datetime "order_updated_at"
+    t.float    "sub_total"
+    t.float    "total"
   end
 
 
@@ -125,7 +129,11 @@ ActiveRecord::Schema.define(version: 20160229175604) do
       shipwire_orders.order_updated_at AS shipwire_updated_at,
       xero_invoices.order_updated_at AS xero_updated_at,
       shopify_orders.total_shipping AS shopify_total_shipping,
-      shipwire_orders.total_shipping AS shipwire_total_shipping
+      shipwire_orders.total_shipping AS shipwire_total_shipping,
+      shopify_orders.sub_total AS shopify_sub_total,
+      xero_invoices.sub_total AS xero_sub_total,
+      shopify_orders.total AS shopify_total,
+      xero_invoices.total AS xero_total
      FROM ((shipwire_orders
        LEFT JOIN shopify_orders ON (((shipwire_orders.shopify_id)::text ~~* ((shopify_orders.shopify_id)::text || '%'::text))))
        LEFT JOIN xero_invoices ON (((shipwire_orders.shopify_id)::text ~~* ((xero_invoices.shopify_id)::text || '%'::text))));

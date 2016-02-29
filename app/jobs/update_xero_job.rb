@@ -14,6 +14,8 @@ class UpdateXeroJob < ActiveJob::Base
        local_inv.shopify_url = invoice.url
        local_inv.invoice_date = invoice.date
        local_inv.order_updated_at = invoice.updated_date_utc
+       local_inv.total = invoice.total
+       local_inv.sub_total = invoice.sub_total
        local_inv.save
      end
   end

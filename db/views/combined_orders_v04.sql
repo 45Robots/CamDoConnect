@@ -13,7 +13,11 @@ shopify_orders.order_updated_at AS shopify_updated_at,
 shipwire_orders.order_updated_at AS shipwire_updated_at,
 xero_invoices.order_updated_at AS xero_updated_at,
 shopify_orders.total_shipping AS shopify_total_shipping,
-shipwire_orders.total_shipping AS shipwire_total_shipping
+shipwire_orders.total_shipping AS shipwire_total_shipping,
+shopify_orders.sub_total AS shopify_sub_total,
+xero_invoices.sub_total AS xero_sub_total,
+shopify_orders.total AS shopify_total,
+xero_invoices.total AS xero_total
 FROM shipwire_orders
 LEFT OUTER JOIN shopify_orders ON shipwire_orders.shopify_id ILIKE shopify_orders.shopify_id || '%'
 LEFT OUTER JOIN xero_invoices ON shipwire_orders.shopify_id ILIKE xero_invoices.shopify_id || '%'
