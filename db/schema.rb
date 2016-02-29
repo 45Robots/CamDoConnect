@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160229172732) do
+ActiveRecord::Schema.define(version: 20160229175604) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -114,16 +114,21 @@ ActiveRecord::Schema.define(version: 20160229172732) do
       SELECT shipwire_orders.id,
       shopify_orders.shopify_id AS shopify_identifier,
       shipwire_orders.shopify_id AS shipwire_identifier,
+      xero_invoices.shopify_id AS xero_identifier,
       shopify_orders.id AS shopify_order_id,
       shipwire_orders.id AS shipwire_order_id,
+      xero_invoices.id AS xero_invoice_id,
       shopify_orders.fulfillment_status AS shopify_status,
       shipwire_orders.fulfillment_status AS shipwire_status,
+      xero_invoices.invoice_status AS xero_status,
       shopify_orders.order_updated_at AS shopify_updated_at,
       shipwire_orders.order_updated_at AS shipwire_updated_at,
+      xero_invoices.order_updated_at AS xero_updated_at,
       shopify_orders.total_shipping AS shopify_total_shipping,
       shipwire_orders.total_shipping AS shipwire_total_shipping
-     FROM (shipwire_orders
-       LEFT JOIN shopify_orders ON (((shipwire_orders.shopify_id)::text ~~* ((shopify_orders.shopify_id)::text || '%'::text))));
+     FROM ((shipwire_orders
+       LEFT JOIN shopify_orders ON (((shipwire_orders.shopify_id)::text ~~* ((shopify_orders.shopify_id)::text || '%'::text))))
+       LEFT JOIN xero_invoices ON (((shipwire_orders.shopify_id)::text ~~* ((xero_invoices.shopify_id)::text || '%'::text))));
   SQL
 
 end
