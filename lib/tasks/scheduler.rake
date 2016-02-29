@@ -3,5 +3,6 @@ namespace :sources do
   task :update_external_sources => :environment do
     UpdateShipwireJob.perform_later
     UpdateShopifyJob.perform_later
+    UpdateXeroJob.perform_later
   end
 end
