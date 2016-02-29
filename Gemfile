@@ -26,7 +26,7 @@ gem 'shopify_api'
 gem 'faraday'
 gem 'awesome_print'
 gem 'scenic'
-gem 'xero_gateway', :git => 'git@github.com:45Robots/xero_gateway.git'
+gem 'xero_gateway', :github => '45Robots/xero_gateway'
 gem 'oauth', '~> 0.3.0'
 
 group :development do

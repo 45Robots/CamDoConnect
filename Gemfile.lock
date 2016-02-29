@@ -1,5 +1,5 @@
 GIT
-  remote: git@github.com:45Robots/xero_gateway.git
+  remote: git://github.com/45Robots/xero_gateway.git
   revision: 4c479f9771fc6e35bc5c0c82f8f611f0af9eeeff
   specs:
     xero_gateway (2.2.0)
