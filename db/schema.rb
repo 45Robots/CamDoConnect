@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160229175604) do
+ActiveRecord::Schema.define(version: 20160229195624) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -114,7 +114,7 @@ ActiveRecord::Schema.define(version: 20160229175604) do
   end
 
 
-  create_view :combined_orders,  sql_definition: <<-SQL
+  create_view :combined_orders, materialized: true,  sql_definition: <<-SQL
       SELECT shipwire_orders.id,
       shopify_orders.shopify_id AS shopify_identifier,
       shipwire_orders.shopify_id AS shipwire_identifier,
@@ -138,5 +138,7 @@ ActiveRecord::Schema.define(version: 20160229175604) do
        LEFT JOIN shopify_orders ON (((shipwire_orders.shopify_id)::text ~~* ((shopify_orders.shopify_id)::text || '%'::text))))
        LEFT JOIN xero_invoices ON (((shipwire_orders.shopify_id)::text ~~* ((xero_invoices.shopify_id)::text || '%'::text))));
   SQL
+
+  add_index "combined_orders", ["id"], name: "index_combined_orders_on_id", unique: true, using: :btree
 
 end

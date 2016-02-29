@@ -1,4 +1,9 @@
 class CombinedOrder < ActiveRecord::Base
+
+  def self.refresh
+    Scenic.database.refresh_materialized_view(table_name, concurrently: true)
+  end
+
   self.primary_key = :id
 
   belongs_to :shopify_order
@@ -19,4 +24,5 @@ class CombinedOrder < ActiveRecord::Base
   def readonly?
     true
   end
+
 end

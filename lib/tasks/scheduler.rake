@@ -4,5 +4,6 @@ namespace :sources do
     UpdateShipwireJob.perform_later
     UpdateShopifyJob.perform_later
     UpdateXeroJob.perform_later
+    CombinedOrder.refresh
   end
 end
