@@ -3,6 +3,7 @@ class CombinedOrder < ActiveRecord::Base
   scope :older_than, ->(time) {where('shopify_updated_at < ?', time)}
 
   scope :fulfilled, ->{where(shopify_status: 'fulfilled', shipwire_status: ['completed', 'delivered'], xero_status: 'PAID')}
+  scope :xero_wtf, ->{where(xero_identifier: nil)}
 
 
   def self.refresh

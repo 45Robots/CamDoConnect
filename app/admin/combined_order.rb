@@ -1,5 +1,5 @@
-ActiveAdmin.register CombinedOrder do
-  menu label: "All Orders"
+ActiveAdmin.register CombinedOrder, as: "Order" do
+  #menu label: "All Orders"
 
   config.per_page = 100
   config.sort_order = 'shipwire_updated_at_desc'
@@ -7,6 +7,10 @@ ActiveAdmin.register CombinedOrder do
 
   preserve_default_filters!
   remove_filter :id, :shopify_order, :shipwire_order, :xero_invoice, :shopify_identifier, :xero_identifier
+
+  scope :all, default: true
+  scope :fulfilled
+  scope :xero_wtf
 
   index do
     column :shopify_identifier
@@ -56,16 +60,6 @@ ActiveAdmin.register CombinedOrder do
     active_admin_comments
   end
 
-  controller do
-    def scoped_collection
-      case params[:scope]
-      when 'fulfilled'
-        end_of_association_chain.fulfilled
-      else
-        end_of_association_chain
-      end
-    end
-  end
 end
 
 
