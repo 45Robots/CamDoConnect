@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160229195624) do
+ActiveRecord::Schema.define(version: 20160309231933) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,8 @@ ActiveRecord::Schema.define(version: 20160229195624) do
     t.float    "shipping_amount"
     t.integer  "units"
     t.float    "total_shipping"
+    t.datetime "accepted_at"
+    t.datetime "shipped_at"
   end
 
   create_table "shopify_orders", force: :cascade do |t|
@@ -61,6 +63,8 @@ ActiveRecord::Schema.define(version: 20160229195624) do
     t.float    "total_shipping"
     t.float    "sub_total"
     t.float    "total"
+    t.float    "discount_total"
+    t.date     "paid_date"
   end
 
   create_table "users", force: :cascade do |t|
@@ -133,7 +137,11 @@ ActiveRecord::Schema.define(version: 20160229195624) do
       shopify_orders.sub_total AS shopify_sub_total,
       xero_invoices.sub_total AS xero_sub_total,
       shopify_orders.total AS shopify_total,
-      xero_invoices.total AS xero_total
+      xero_invoices.total AS xero_total,
+      shopify_orders.discount_total AS shopify_discount_total,
+      shopify_orders.paid_date AS shopify_paid_date,
+      shipwire_orders.accepted_at AS shipwire_accepted_at,
+      shipwire_orders.shipped_at AS shipwire_shipped_at
      FROM ((shipwire_orders
        LEFT JOIN shopify_orders ON (((shipwire_orders.shopify_id)::text ~~* ((shopify_orders.shopify_id)::text || '%'::text))))
        LEFT JOIN xero_invoices ON (((shipwire_orders.shopify_id)::text ~~* ((xero_invoices.shopify_id)::text || '%'::text))));

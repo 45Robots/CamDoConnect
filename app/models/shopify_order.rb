@@ -12,5 +12,7 @@ class ShopifyOrder < ActiveRecord::Base
     self.total_shipping = Array(payload.dig('shipping_lines')).map {|sl| sl['price']}.map(&:to_f).sum
     self.total = payload.dig('total_price')
     self.sub_total = payload.dig('subtotal_price')
+    self.discount_total = payload.dig('total_discounts')
+    self.paid_date = payload.dig('processed_at')
   end
 end

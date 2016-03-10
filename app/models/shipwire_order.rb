@@ -11,6 +11,8 @@ class ShipwireOrder < ActiveRecord::Base
     self.shopify_id = payload.dig('orderNo')
     self.fulfillment_status = payload.dig('status')
     self.total_shipping = payload.dig('pricing', 'resource', 'total')
+    self.accepted_at = payload.dig('events', 'resource', 'createdDate')
+    self.shipped_at = payload.dig('events', 'resource', 'completedDate')
   end
 
 end
