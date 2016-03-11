@@ -4,12 +4,17 @@ class CombinedOrder < ActiveRecord::Base
 
   scope :fulfilled, ->{where(shopify_status: 'fulfilled', shipwire_status: ['completed', 'delivered'], xero_status: 'PAID')}
   scope :xero_wtf,  ->{where(xero_identifier: nil).where.not(shopify_status: nil, shipwire_status: nil)}
-  scope :yarin, ->{ where(shopify_status: nil, xero_status: nil) }
+  scope :yarin, ->{ where(shopify_identifier: nil, xero_identifier: nil) }
   scope :returns, ->{where(shipwire_status: 'returned')}
   scope :open_orders, ->{where(shopify_status: nil, shipwire_status: 'submitted', xero_status: 'PAID')}
   scope :back_orders, ->{where(shipwire_status: 'held')}
   scope :investigate, ->{where(shopify_status: nil, shipwire_status: ['delivered', 'complete'], xero_status: 'PAID')}
 
+  def self.edge_cases
+    scopes = [:fulfilled, :xero_wtf, :yarin, :open_orders, :back_orders]
+     ids = scopes.map {|scope| self.send(scope).pluck(:id)}.flatten.uniq
+     where.not(id: ids)
+  end
 
   def self.refresh
     Scenic.database.refresh_materialized_view(table_name, concurrently: true)

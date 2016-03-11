@@ -16,6 +16,7 @@ ActiveAdmin.register CombinedOrder, as: "Order" do
   scope :open_orders
   scope :back_orders
   scope :investigate
+  scope :edge_cases
 
   index do
     column :shopify_identifier
