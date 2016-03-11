@@ -10,9 +10,12 @@ class CombinedOrder < ActiveRecord::Base
   scope :back_orders, ->{where(shipwire_status: 'held')}
   scope :investigate, ->{where(shopify_status: nil, shipwire_status: ['delivered', 'complete'], xero_status: 'PAID')}
 
-  def self.edge_cases
-    scopes = [:fulfilled, :xero_wtf, :yarin, :open_orders, :back_orders]
-     ids = scopes.map {|scope| self.send(scope).pluck(:id)}.flatten.uniq
+  def self.specific_cases
+    [:fulfilled, :xero_wtf, :yarin, :returns, :open_orders, :back_orders, :investigate]
+  end
+
+  def self.other_cases
+     ids = specific_cases.map {|scope| self.send(scope).pluck(:id)}.flatten.uniq
      where.not(id: ids)
   end
 

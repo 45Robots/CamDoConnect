@@ -9,14 +9,8 @@ ActiveAdmin.register CombinedOrder, as: "Order" do
   remove_filter :id, :shopify_order, :shipwire_order, :xero_invoice, :shopify_identifier, :xero_identifier
 
   scope :all, default: true
-  scope :fulfilled
-  scope :xero_wtf
-  scope :yarin
-  scope :returns
-  scope :open_orders
-  scope :back_orders
-  scope :investigate
-  scope :edge_cases
+  CombinedOrder.specific_cases.each {|specific_case| scope specific_case}
+  scope :other_cases
 
   index do
     column :shopify_identifier
