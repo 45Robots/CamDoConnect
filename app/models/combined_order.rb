@@ -8,7 +8,7 @@ class CombinedOrder < ActiveRecord::Base
   scope :returns, ->{where(shipwire_status: 'returned')}
   scope :open_orders, ->{where(shopify_status: nil, shipwire_status: 'submitted', xero_status: 'PAID')}
   scope :back_orders, ->{where(shipwire_status: 'held')}
-  scope :investigate, ->{where(shopify_status: nil, shipwire_status: ['delivered', 'complete', xero_status: 'PAID'])}
+  scope :investigate, ->{where(shopify_status: nil, shipwire_status: ['delivered', 'complete'], xero_status: 'PAID')}
 
 
   def self.refresh
