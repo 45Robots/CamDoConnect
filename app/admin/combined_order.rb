@@ -11,6 +11,11 @@ ActiveAdmin.register CombinedOrder, as: "Order" do
   scope :all, default: true
   scope :fulfilled
   scope :xero_wtf
+  scope :yarin
+  scope :returns
+  scope :open_orders
+  scope :back_orders
+  scope :investigate
 
   index do
     column :shopify_identifier
