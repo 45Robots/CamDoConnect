@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160309231933) do
+ActiveRecord::Schema.define(version: 20160420131436) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -19,17 +19,16 @@ ActiveRecord::Schema.define(version: 20160309231933) do
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace"
     t.text     "body"
-    t.string   "resource_id",   null: false
     t.string   "resource_type", null: false
     t.integer  "author_id"
     t.string   "author_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "resource_id"
   end
 
   add_index "active_admin_comments", ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id", using: :btree
   add_index "active_admin_comments", ["namespace"], name: "index_active_admin_comments_on_namespace", using: :btree
-  add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id", using: :btree
 
   create_table "shipwire_orders", force: :cascade do |t|
     t.integer  "order_id",           limit: 8
@@ -46,6 +45,7 @@ ActiveRecord::Schema.define(version: 20160309231933) do
     t.float    "total_shipping"
     t.datetime "accepted_at"
     t.datetime "shipped_at"
+    t.string   "hold_status"
   end
 
   create_table "shopify_orders", force: :cascade do |t|
@@ -141,7 +141,8 @@ ActiveRecord::Schema.define(version: 20160309231933) do
       shopify_orders.discount_total AS shopify_discount_total,
       shopify_orders.paid_date AS shopify_paid_date,
       shipwire_orders.accepted_at AS shipwire_accepted_at,
-      shipwire_orders.shipped_at AS shipwire_shipped_at
+      shipwire_orders.shipped_at AS shipwire_shipped_at,
+      shipwire_orders.hold_status AS shipwire_hold_status
      FROM ((shipwire_orders
        LEFT JOIN shopify_orders ON (((shipwire_orders.shopify_id)::text ~~* ((shopify_orders.shopify_id)::text || '%'::text))))
        LEFT JOIN xero_invoices ON (((shipwire_orders.shopify_id)::text ~~* ((xero_invoices.shopify_id)::text || '%'::text))));

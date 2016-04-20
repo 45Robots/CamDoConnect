@@ -1,22 +1,25 @@
 class CombinedOrder < ActiveRecord::Base
 
+  has_many :comments, as: 'resource', class_name: 'ActiveAdmin::Comment', dependent: :destroy
+
   scope :older_than, ->(time) {where('shipwire_updated_at < ?', time)}
+  scope :without_comment, ->{joins('left join active_admin_comments on combined_orders.id::varchar = active_admin_comments.resource_id').where(active_admin_comments: {id: nil})}
 
   scope :fulfilled, ->{where(shopify_status: 'fulfilled', shipwire_status: ['completed', 'delivered'], xero_status: 'PAID')}
-  scope :xero_wtf,  ->{where(xero_identifier: nil).where.not(shopify_status: nil, shipwire_status: nil)}
-  scope :yarin, ->{ where(shopify_identifier: nil, xero_identifier: nil) }
-  scope :returns, ->{where(shipwire_status: 'returned')}
-  scope :open_orders, ->{where(shopify_status: nil, shipwire_status: 'submitted', xero_status: 'PAID')}
-  scope :back_orders, ->{where(shipwire_status: 'held')}
-  scope :investigate, ->{where(shopify_status: nil, shipwire_status: ['delivered', 'complete'], xero_status: 'PAID')}
+  scope :xero_wtf,  ->{without_comment.where(xero_identifier: nil).where.not(shopify_status: nil, shipwire_status: nil)}
+  scope :customer_service, ->{ without_comment.where(shopify_identifier: nil, xero_identifier: nil) }
+  scope :returns, ->{without_comment.where(shipwire_status: 'returned')}
+  scope :open_orders, ->{without_comment.where(shopify_status: nil, shipwire_status: 'submitted', xero_status: 'PAID')}
+  scope :back_orders, ->{without_comment.where(shipwire_hold_status: 'backorder')}
+  scope :investigate, ->{without_comment.where(shopify_status: nil, shipwire_status: ['delivered', 'complete'], xero_status: 'PAID')}
 
   def self.specific_cases
-    [:fulfilled, :xero_wtf, :yarin, :returns, :open_orders, :back_orders, :investigate]
+    [:fulfilled, :xero_wtf, :customer_service, :returns, :open_orders, :back_orders, :investigate]
   end
 
   def self.other_cases
      ids = specific_cases.map {|scope| self.send(scope).pluck(:id)}.flatten.uniq
-     where.not(id: ids)
+     without_comment.where.not(id: ids).where.not(shipwire_status: 'cancelled')
   end
 
   def self.refresh

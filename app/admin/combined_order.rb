@@ -30,6 +30,7 @@ ActiveAdmin.register CombinedOrder, as: "Order" do
     column :shipwire_accepted_at
     column :shipwire_shipped_at
     column :shipwire_duration
+    column :shipwire_hold_status
     column "Updated at", :shipwire_updated_at
     actions
   end

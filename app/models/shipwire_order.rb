@@ -13,6 +13,7 @@ class ShipwireOrder < ActiveRecord::Base
     self.total_shipping = payload.dig('pricing', 'resource', 'total')
     self.accepted_at = payload.dig('events', 'resource', 'createdDate')
     self.shipped_at = payload.dig('events', 'resource', 'completedDate')
+    self.hold_status = Array(payload.dig('holds','resource','items')).map {|item| item.dig('resource', 'subType')}.join(', ')
   end
 
 end
