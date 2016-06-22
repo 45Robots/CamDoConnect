@@ -6,7 +6,7 @@ class CombinedOrder < ActiveRecord::Base
   scope :without_comment, ->{joins('left join active_admin_comments on combined_orders.id::varchar = active_admin_comments.resource_id').where(active_admin_comments: {id: nil})}
 
   scope :fulfilled, ->{where(shopify_status: 'fulfilled', shipwire_status: ['completed', 'delivered'], xero_status: 'PAID')}
-  scope :xero_wtf,  ->{without_comment.where(xero_identifier: nil).where.not(shopify_status: nil, shipwire_status: nil)}
+  scope :xero_wtf,  ->{without_comment.where(xero_identifier: nil).where.not(shopify_status: nil, shipwire_status: [nil, 'cancelled', 'held'])}
   scope :customer_service, ->{ without_comment.where(shopify_identifier: nil, xero_identifier: nil) }
   scope :returns, ->{without_comment.where(shipwire_status: 'returned')}
   scope :open_orders, ->{without_comment.where(shopify_status: nil, shipwire_status: 'submitted', xero_status: 'PAID')}
