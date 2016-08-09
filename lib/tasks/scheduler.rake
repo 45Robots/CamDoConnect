@@ -4,7 +4,7 @@ namespace :sources do
     UpdateShipwireJob.perform_later
     UpdateShopifyJob.perform_later
     UpdateXeroJob.perform_later
-    CombinedOrder.older_than([Time.now.change(year: 2016, month: 1, day: 1, hour: 0), Time.now.last_year].max).each {|o| o.destroy}
+    CombinedOrder.older_than(Time.now - 6.months).each {|o| o.destroy}
     CombinedOrder.refresh
   end
 end
